@@ -17,11 +17,11 @@ module.exports = class Email{
     {
         return nodemailer.createTransport({
             service: 'gmail',
-            port: 587,
-            secure: false,
-            requireTLS: true,
-            logger: true,
-            debug: true,
+            // port: 587,
+            // secure: false,
+            // requireTLS: true,
+            // logger: true,
+            // debug: true,
             auth: {
               user: process.env.EMAIL_FROM,
               pass: process.env.EMAIL_PASS
@@ -46,14 +46,15 @@ module.exports = class Email{
     {
         html = String(welcome);
         html = html.replace('[Username]', this.firstName);
-        html = html.replace(/[Your_Website_URL]/g, this.url);
+        console.log("After replacing "+ html)
+        html = html.replace('[Your_Website_URL]', this.url);
     }
     else
     {
       html = String(passwordReset);
       
       html = html.replace('[Username]', this.firstName);
-      html = html.replace(/[Password_Reset_URL]/g, this.url);
+      html = html.replace('[Password_Reset_URL]', this.url);
     }
 
     const mailOptions = {
@@ -62,7 +63,7 @@ module.exports = class Email{
       subject: subject,
       html: html
       }
-
+      //console.log("Mail msg "+ html)
       await this.newTransport().sendMail(mailOptions)
   }
 
