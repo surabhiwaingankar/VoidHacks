@@ -11,6 +11,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require(`${__dirname}/routes/userRoutes`);
 const candidateRouter = require(`${__dirname}/routes/candidateRoutes`);
+const electionRouter = require(`${__dirname}/routes/electionRoutes`);
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use(compression());
 
 app.use('/api/users', userRouter);
 app.use('/api/candidates', candidateRouter);
+app.use('/api/elections', electionRouter);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

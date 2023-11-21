@@ -3,8 +3,8 @@ const  catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.getAllCandidates = catchAsync(async (req,res,next) =>{
-    const candidates = await Candidate.find();
-     res.status(200).json({
+
+        res.status(200).json({
          status: 'success',
          results: candidates.length,
          data: {
