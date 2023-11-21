@@ -15,8 +15,13 @@ module.exports = class Email{
   newTransport(){
     if(process.env.NODE_ENV==='production')
     {
-        nodemailer.createTransport({
+        return nodemailer.createTransport({
             service: 'gmail',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            logger: true,
+            debug: true,
             auth: {
               user: process.env.EMAIL_FROM,
               pass: process.env.EMAIL_PASS
@@ -29,7 +34,7 @@ module.exports = class Email{
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
       auth: {
-        user: process.env.EMAIL_USERNAME,
+        user: process.env.EMAIL_FROM,
         pass: process.env.EMAIL_PASSWORD
       }
     }); 
@@ -40,8 +45,6 @@ module.exports = class Email{
     if(template==='welcome')
     {
         html = String(welcome);
-        console.log("Inside email"+html)
-        console.log(typeof html)
         html = html.replace('[Username]', this.firstName);
         html = html.replace(/[Your_Website_URL]/g, this.url);
     }
