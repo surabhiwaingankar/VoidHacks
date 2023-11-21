@@ -46,8 +46,6 @@ module.exports = class Email{
     {
         html = String(welcome);
         html = html.replace('[Username]', this.firstName);
-        console.log("After replacing "+ html)
-        html = html.replace('[Your_Website_URL]', this.url);
     }
     else
     {

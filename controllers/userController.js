@@ -35,7 +35,7 @@ const filterObj = (obj, ...allowedFields) => {
       );
     }
   
-    const filteredBody = filterObj(req.body, 'name', 'email', 'mobileNo');
+    const filteredBody = filterObj(req.body, 'name', 'email', 'mobileNo', 'location');
     if(req.file) filteredBody.image = req.file.filename
   
     const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {

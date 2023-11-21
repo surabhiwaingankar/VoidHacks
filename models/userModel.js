@@ -52,9 +52,16 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!'
     }
   },
+  State: String,
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  elections: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Election'
+    }
+  ]
 });
 
 userSchema.pre('save', async function(next) {
@@ -77,8 +84,9 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.pre(/^find/, function(next) {
-  // this points to the current query
-  this.find({ active: { $ne: false } });
+  this.populate({
+    path: 'elections'
+  })
   next();
 });
 

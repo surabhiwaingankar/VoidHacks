@@ -13,7 +13,7 @@ router.route('/resetPassword/:token').patch(authenticationController.resetPasswo
 router.route('/updatePassword').patch(authenticationController.protect ,authenticationController.updatePassword);
 
 router.route('/me').get(authenticationController.protect, userController.getMe, userController.getUser);
-router.route('/updateMe').patch(authenticationController.protect, userController.uploadUserPhoto, userController.updateMe);
+router.route('/updateMe').patch(authenticationController.protect, userController.updateMe);
 router.route('/deleteMe').delete(authenticationController.protect, userController.deleteMe);
 
 module.exports = router
