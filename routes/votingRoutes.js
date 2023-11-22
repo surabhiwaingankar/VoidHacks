@@ -5,6 +5,6 @@ const authenticationController = require(`./../controllers/authenticationControl
 
 const router = express.Router();
 
-router.route('/').post(userController.uploadUserPhoto, votingController.vote)
+router.route('/').post(authenticationController.protect, userController.uploadUserPhoto, votingController.vote)
 
 module.exports = router
