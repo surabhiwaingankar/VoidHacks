@@ -28,7 +28,11 @@ exports.getCandidate = catchAsync(async (req,res,next) =>{
 })
 
 exports.createCandidate = catchAsync(async (req,res,next) =>{
-    const newCandidate = await Candidate.create(req.body);
+    const newCandidate = await Candidate.create({
+        name: req.body.name,
+        party: req.body.party,
+        constituency: req.body.constituency
+    });
      res.status(200).json({
          status: 'success',
          data: {

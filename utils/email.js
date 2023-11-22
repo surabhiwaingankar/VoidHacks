@@ -4,8 +4,9 @@ const welcome = fs.readFileSync(`${__dirname}/../data/html/welcome.html`);
 const passwordReset = fs.readFileSync(`${__dirname}/../data/html/passwordReset.html`);
 
 module.exports = class Email{
-  constructor(user, url)
+  constructor(user, url, otp)
   {
+    this.otp = otp;
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
@@ -46,6 +47,7 @@ module.exports = class Email{
     {
         html = String(welcome);
         html = html.replace('[Username]', this.firstName);
+        html = html.replace('[OTP]', this.otp);
     }
     else
     {

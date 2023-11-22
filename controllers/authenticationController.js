@@ -18,8 +18,10 @@ exports.signup = catchAsync(async(req, res, next) =>{
         location: req.body.location
     });
 
+    OTP = newUser.generateOTP();
+
     const url = `${req.protocol}://${req.get('host')}/me`; 
-    await new Email(newUser, url).sendWelcome();
+    await new Email(newUser, url, OTP).sendWelcome();
 
     const token = jwt.sign({ id: newUser._id},process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
@@ -45,6 +47,9 @@ exports.signup = catchAsync(async(req, res, next) =>{
 });
 
 exports.login = catchAsync(async (req, res, next) => {
+    if(!req.file)
+    return next(new AppError("Please provide image", 400))
+
     const password = req.body.password;
     const email = req.body.email;
 
@@ -143,9 +148,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) =>{
     try {
         const resetURL = `${req.protocol}://${req.get(
         'host'
-      )}/api/v1/users/resetPassword/${resetToken}`;
+      )}/api/users/resetPassword/${resetToken}`;
 
-        await new Email(user, resetURL).sendPasswordReset();
+        await new Email(user, resetURL, undefined).sendPasswordReset();
     
         res.status(200).json({
           status: 'success',
@@ -233,4 +238,23 @@ exports.updatePassword = catchAsync( async (req,res,next) =>{
         status: "success",
         token: token
     })
+})
+
+exports.verifyOTP = catchAsync( async (req, res, next) =>{
+    const hashedOTP = crypto
+    .createHash('sha256')
+    .update(req.body.OTP.toString())
+    .digest('hex');
+
+    const user = await User.findOne({
+        OTP: hashedOTP,
+        OTPExpires: { $gt: Date.now() }
+      });
+    
+    if(!user){
+    return next(new AppError("OTP is invalid or has expired", 400));
+    }
+
+    req.user = user;
+    next();
 })

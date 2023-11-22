@@ -56,12 +56,16 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  OTPExpires: Date,
   elections: [
     {
       type: mongoose.Schema.ObjectId,
       ref: 'Election'
     }
-  ]
+  ],
+  OTP: {
+    type: String
+  }
 });
 
 userSchema.pre('save', async function(next) {
@@ -73,6 +77,7 @@ userSchema.pre('save', async function(next) {
 
   // Delete passwordConfirm field
   this.passwordConfirm = undefined;
+
   next();
 });
 
@@ -121,6 +126,17 @@ userSchema.methods.createPasswordResetToken = function() {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
+};
+
+userSchema.methods.generateOTP = function() {
+  const OTPgen = Math.floor(Math.random() * 90000) + 10000;
+  this.OTP = crypto
+  .createHash('sha256')
+  .update(OTPgen.toString())
+  .digest('hex');
+  this.OTPExpires = Date.now() + 10 * 60 * 1000;
+  this.save({validateBeforeSave: false});
+  return OTPgen;
 };
 
 const User = mongoose.model('User', userSchema);
